@@ -1,0 +1,90 @@
+import type { SalesType } from './types';
+
+// How each catalog table is edited. Keys match CATALOG_KINDS in
+// ambi-admin-server/catalog.ts; enum options match the Postgres enums.
+export interface CatalogField {
+  key: string;
+  label: string;
+  /** 'textarea' fields go on their own full-width line under the others. */
+  kind: 'int' | 'money' | 'percent' | 'select' | 'text' | 'textarea';
+  options?: readonly string[];
+  placeholder?: string;
+}
+
+export interface CatalogKindUi {
+  kind: string;
+  title: string;
+  description: string;
+  fields: CatalogField[];
+  /** Which sales types customers see this for; omitted means both. */
+  salesTypes?: SalesType[];
+  /** Shown when there are no rows. */
+  emptyLabel?: string;
+}
+
+export const CATALOG_UI: CatalogKindUi[] = [
+  {
+    kind: 'customTier',
+    title: 'Package tiers',
+    description: 'Your own packages. Customers pick exactly one; shown cheapest first.',
+    salesTypes: ['custom'],
+    emptyLabel: "None yet. Customers can't get past the package step until you add one.",
+    fields: [
+      { key: 'name', label: 'Name', kind: 'text', placeholder: 'e.g. Plaid Kit' },
+      { key: 'price', label: 'Price', kind: 'money' },
+      { key: 'description', label: 'Description', kind: 'textarea', placeholder: "What's included (optional)" },
+    ],
+  },
+  {
+    kind: 'headliner',
+    salesTypes: ['basic'],
+    title: 'Starlight headliner tiers',
+    description: 'Priced by fiber (star) count.',
+    fields: [
+      { key: 'quantity', label: 'Stars', kind: 'int' },
+      { key: 'price', label: 'Price', kind: 'money' },
+    ],
+  },
+  {
+    kind: 'door',
+    salesTypes: ['basic'],
+    title: 'Door lighting tiers',
+    description: 'Priced by number of doors.',
+    fields: [
+      { key: 'quantity', label: 'Doors', kind: 'int' },
+      { key: 'price', label: 'Price', kind: 'money' },
+    ],
+  },
+  {
+    kind: 'addOn',
+    salesTypes: ['basic'],
+    title: 'Add-ons',
+    description: 'Per-unit price. Customers pick a quantity from 0 to 8.',
+    fields: [
+      {
+        key: 'name',
+        label: 'Add-on',
+        kind: 'select',
+        options: ['handles', 'storage', 'footwell', 'extraDashStrip'],
+      },
+      { key: 'price', label: 'Unit price', kind: 'money' },
+    ],
+  },
+  {
+    kind: 'color',
+    title: 'Colors offered',
+    description: 'Which light colors customers can choose.',
+    fields: [
+      { key: 'name', label: 'Color', kind: 'select', options: ['red', 'blue', 'green', 'violet'] },
+    ],
+  },
+  {
+    kind: 'rush',
+    title: 'Rush pricing',
+    description: 'Surcharge when the requested date is within this many days.',
+    fields: [
+      { key: 'days_in_advance', label: 'Within (days)', kind: 'int' },
+      { key: 'percentage', label: 'Surcharge %', kind: 'percent' },
+    ],
+  },
+];
