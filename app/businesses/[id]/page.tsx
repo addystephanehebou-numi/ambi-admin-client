@@ -109,7 +109,12 @@ export default function BusinessPage() {
               Change on Details
             </Link>
           </p>
-          {CATALOG_UI.filter((ui) => !ui.salesTypes || ui.salesTypes.includes(data.sales_type)).map((ui) => (
+          {CATALOG_UI.filter(
+            (ui) =>
+              (!ui.salesTypes || ui.salesTypes.includes(data.sales_type)) &&
+              // Customers never see colors when they're set in an app.
+              !(ui.kind === 'color' && data.color_selection === 'in_app'),
+          ).map((ui) => (
             <CatalogSection key={ui.kind} businessId={id} ui={ui} items={data.catalog[ui.kind] ?? []} />
           ))}
         </div>

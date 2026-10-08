@@ -21,6 +21,8 @@ export interface BusinessInput {
   contains_warranty: boolean;
   warranty_name: string;
   warranty_price: number | string | null;
+  /** 'in_app': no color picker; the customer recolors the lights from a Bluetooth app. */
+  color_selection: 'at_booking' | 'in_app';
   service_modes: 'shop' | 'mobile' | 'both';
   travel_fee_value: number | string;
   soonest_start_days_in_advance: number | string;

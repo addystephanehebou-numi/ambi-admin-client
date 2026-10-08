@@ -19,6 +19,7 @@ export const EMPTY_BUSINESS: BusinessInput = {
   contains_warranty: false,
   warranty_name: '',
   warranty_price: '',
+  color_selection: 'at_booking',
   service_modes: 'both',
   travel_fee_value: 0,
   soonest_start_days_in_advance: 3,
@@ -161,6 +162,16 @@ export function BusinessForm({
             >
               <option value="basic">Basic: headliner, door lighting and add-ons</option>
               <option value="custom">Custom: their own package tiers</option>
+            </select>
+          </Field>
+          <Field label="Light color">
+            <select
+              className="input"
+              value={form.color_selection}
+              onChange={(e) => set('color_selection', e.target.value as BusinessInput['color_selection'])}
+            >
+              <option value="at_booking">Customer picks a color when booking</option>
+              <option value="in_app">Set after install in a Bluetooth app (no picker)</option>
             </select>
           </Field>
           <Field label="Description" className="sm:col-span-2">
