@@ -13,8 +13,12 @@ type Values = Record<string, string>;
 const toInput = (field: CatalogField, value: unknown): string =>
   field.kind === 'money' ? toMoneyInput(value as number | string | null) : String(value ?? '');
 
+/** A new row's starting value: the first option, unticked, or empty. */
+const emptyValue = (field: CatalogField): string =>
+  field.kind === 'checkbox' ? 'false' : (field.options?.[0] ?? '');
+
 const toValues = (fields: CatalogField[], item?: CatalogItem): Values =>
-  Object.fromEntries(fields.map((f) => [f.key, item ? toInput(f, item[f.key]) : (f.options?.[0] ?? '')]));
+  Object.fromEntries(fields.map((f) => [f.key, item ? toInput(f, item[f.key]) : emptyValue(f)]));
 
 const isWide = (field: CatalogField) => field.kind === 'textarea';
 
@@ -26,6 +30,21 @@ function FieldInput({ field, value, onChange }: { field: CatalogField; value: st
           <option key={option}>{option}</option>
         ))}
       </select>
+    );
+  }
+  // Sent as 'true'/'false', like every other value in the form.
+  if (field.kind === 'checkbox') {
+    return (
+      <label className="flex h-10 items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          className="size-4 accent-accent"
+          checked={value === 'true'}
+          aria-label={field.label}
+          onChange={(e) => onChange(String(e.target.checked))}
+        />
+        {field.label}
+      </label>
     );
   }
   if (field.kind === 'textarea') {
@@ -56,7 +75,7 @@ function FieldInput({ field, value, onChange }: { field: CatalogField; value: st
     <input
       className="input"
       type="number"
-      min={field.kind === 'int' ? (field.key === 'quantity' ? 1 : 0) : 0}
+      min={field.kind === 'int' ? (field.key === 'quantity' ? 1 : 0) : field.allowNegative ? undefined : 0}
       step={field.kind === 'int' ? 1 : '0.01'}
       required
       value={value}

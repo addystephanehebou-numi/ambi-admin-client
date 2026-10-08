@@ -6,9 +6,11 @@ export interface CatalogField {
   key: string;
   label: string;
   /** 'textarea' fields go on their own full-width line under the others. */
-  kind: 'int' | 'money' | 'percent' | 'select' | 'text' | 'textarea';
+  kind: 'int' | 'money' | 'percent' | 'select' | 'text' | 'textarea' | 'checkbox';
   options?: readonly string[];
   placeholder?: string;
+  /** Money fields only: allow a negative amount (a discount). */
+  allowNegative?: boolean;
 }
 
 export interface CatalogKindUi {
@@ -43,6 +45,23 @@ export const CATALOG_UI: CatalogKindUi[] = [
     fields: [
       { key: 'quantity', label: 'Stars', kind: 'int' },
       { key: 'price', label: 'Price', kind: 'money' },
+    ],
+  },
+  {
+    kind: 'starlightAddOn',
+    salesTypes: ['basic'],
+    title: 'Starlight add-ons',
+    description:
+      'On/off extras, shown once a customer picks a headliner. Enter noTwinkle as a negative price (e.g. -80.00). Tick "From" to show the price as "From $X".',
+    fields: [
+      {
+        key: 'name',
+        label: 'Add-on',
+        kind: 'select',
+        options: ['sunroof', 'dualColorStars', 'shootingStars', 'customDesigns', 'noTwinkle'],
+      },
+      { key: 'price', label: 'Price', kind: 'money', allowNegative: true },
+      { key: 'is_starting_price', label: 'From', kind: 'checkbox' },
     ],
   },
   {
