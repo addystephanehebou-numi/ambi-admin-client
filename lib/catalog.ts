@@ -84,7 +84,7 @@ export const CATALOG_UI: CatalogKindUi[] = [
         key: 'name',
         label: 'Add-on',
         kind: 'select',
-        options: ['handles', 'storage', 'footwell', 'extraDashStrip'],
+        options: ['handles', 'storage', 'footwell', 'extraDashStrip', 'speakerRingLights'],
       },
       { key: 'price', label: 'Unit price', kind: 'money' },
     ],
