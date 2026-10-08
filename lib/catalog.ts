@@ -11,6 +11,9 @@ export interface CatalogField {
   placeholder?: string;
   /** Money fields only: allow a negative amount (a discount). */
   allowNegative?: boolean;
+  /** Number fields: the smallest allowed value, and the one a new row starts with. */
+  min?: number;
+  max?: number;
 }
 
 export interface CatalogKindUi {
@@ -41,10 +44,12 @@ export const CATALOG_UI: CatalogKindUi[] = [
     kind: 'headliner',
     salesTypes: ['basic'],
     title: 'Starlight headliner tiers',
-    description: 'Priced by fiber (star) count.',
+    description:
+      'Priced by fiber (star) count. Install days is how many consecutive days the install takes; customers see e.g. "2-day install" and the dates it covers.',
     fields: [
       { key: 'quantity', label: 'Stars', kind: 'int' },
       { key: 'price', label: 'Price', kind: 'money' },
+      { key: 'install_days', label: 'Install days', kind: 'int', min: 1, max: 14 },
     ],
   },
   {

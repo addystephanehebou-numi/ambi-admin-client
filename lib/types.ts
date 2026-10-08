@@ -56,6 +56,8 @@ export interface InstallRequest {
   selected_installation_method: string;
   preferred_date_start_time: string;
   preferred_date_end_time: string;
+  /** Consecutive days the install takes, from the start date. */
+  install_days: number;
   first_name: string;
   last_name: string;
   email: string;

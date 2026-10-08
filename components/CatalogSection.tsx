@@ -15,7 +15,7 @@ const toInput = (field: CatalogField, value: unknown): string =>
 
 /** A new row's starting value: the first option, unticked, or empty. */
 const emptyValue = (field: CatalogField): string =>
-  field.kind === 'checkbox' ? 'false' : (field.options?.[0] ?? '');
+  field.kind === 'checkbox' ? 'false' : field.min != null ? String(field.min) : (field.options?.[0] ?? '');
 
 const toValues = (fields: CatalogField[], item?: CatalogItem): Values =>
   Object.fromEntries(fields.map((f) => [f.key, item ? toInput(f, item[f.key]) : emptyValue(f)]));
@@ -75,7 +75,8 @@ function FieldInput({ field, value, onChange }: { field: CatalogField; value: st
     <input
       className="input"
       type="number"
-      min={field.kind === 'int' ? (field.key === 'quantity' ? 1 : 0) : field.allowNegative ? undefined : 0}
+      min={field.min ?? (field.kind === 'int' ? (field.key === 'quantity' ? 1 : 0) : field.allowNegative ? undefined : 0)}
+      max={field.max}
       step={field.kind === 'int' ? 1 : '0.01'}
       required
       value={value}

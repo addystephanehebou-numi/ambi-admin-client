@@ -26,7 +26,8 @@ export function RequestsTable({ businessId }: { businessId: string }) {
             <th className="px-3 py-2 font-medium">Received</th>
             <th className="px-3 py-2 font-medium">Customer</th>
             <th className="px-3 py-2 font-medium">Vehicle</th>
-            <th className="px-3 py-2 font-medium">Preferred time</th>
+            <th className="px-3 py-2 font-medium">Preferred start</th>
+            <th className="px-3 py-2 font-medium">Install</th>
             <th className="px-3 py-2 font-medium">Method</th>
             <th className="px-3 py-2 font-medium">Status</th>
             <th className="px-3 py-2 text-right font-medium">Quote</th>
@@ -47,6 +48,7 @@ export function RequestsTable({ businessId }: { businessId: string }) {
                 {r.year} {r.make} {r.model}
               </td>
               <td className="whitespace-nowrap px-3 py-2">{dateTime.format(new Date(r.preferred_date_start_time))}</td>
+              <td className="whitespace-nowrap px-3 py-2">{r.install_days === 1 ? '1 day' : `${r.install_days} days`}</td>
               <td className="px-3 py-2 capitalize">{r.selected_installation_method}</td>
               <td className="px-3 py-2">
                 <span className="rounded-full bg-surface px-2 py-0.5 text-xs">{r.status.replace('_', ' ')}</span>
