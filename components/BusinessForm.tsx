@@ -167,7 +167,7 @@ export function BusinessForm({
               value={form.sales_type}
               onChange={(e) => set('sales_type', e.target.value as BusinessInput['sales_type'])}
             >
-              <option value="basic">Basic: headliner, door lighting and add-ons</option>
+              <option value="basic">Basic: headliner, door lighting and door add-ons</option>
               <option value="custom">Custom: their own package tiers</option>
             </select>
           </Field>

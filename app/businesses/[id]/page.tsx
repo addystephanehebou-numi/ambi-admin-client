@@ -104,7 +104,7 @@ export default function BusinessPage() {
           <p className="text-sm text-secondary">
             {data.sales_type === 'custom'
               ? 'This business sells its own package tiers.'
-              : 'This business sells the basic headliner, door lighting and add-on menu.'}{' '}
+              : 'This business sells the basic headliner, door lighting and door lighting add-on menu.'}{' '}
             <Link href={`/businesses/${id}?tab=details`} replace className="text-accent hover:underline">
               Change on Details
             </Link>

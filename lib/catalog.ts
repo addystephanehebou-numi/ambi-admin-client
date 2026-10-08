@@ -58,7 +58,7 @@ export const CATALOG_UI: CatalogKindUi[] = [
   {
     kind: 'addOn',
     salesTypes: ['basic'],
-    title: 'Add-ons',
+    title: 'Door lighting add-ons',
     description: 'Per-unit price. Customers pick a quantity from 0 to 8.',
     fields: [
       {
