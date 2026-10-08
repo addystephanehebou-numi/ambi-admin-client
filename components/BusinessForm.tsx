@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type FormEvent, type ReactNode } from 'react';
+import { toMoneyInput } from '@/lib/money';
 import type { BusinessInput } from '@/lib/types';
 
 const US_STATES = [
@@ -68,7 +69,12 @@ export function BusinessForm({
   error?: string;
   saved?: boolean;
 }) {
-  const [form, setForm] = useState<BusinessInput>(initial);
+  // Money fields always show two decimals ("12.50", not "12.5").
+  const [form, setForm] = useState<BusinessInput>(() => ({
+    ...initial,
+    travel_fee_value: toMoneyInput(initial.travel_fee_value),
+    warranty_price: toMoneyInput(initial.warranty_price),
+  }));
 
   const set = <K extends keyof BusinessInput>(key: K, value: BusinessInput[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -134,6 +140,7 @@ export function BusinessForm({
                 required
                 value={form.travel_fee_value}
                 onChange={(e) => set('travel_fee_value', e.target.value)}
+                onBlur={() => set('travel_fee_value', toMoneyInput(form.travel_fee_value))}
               />
             </Field>
           )}
@@ -214,6 +221,7 @@ export function BusinessForm({
                 required
                 value={form.warranty_price ?? ''}
                 onChange={(e) => set('warranty_price', e.target.value)}
+                onBlur={() => set('warranty_price', toMoneyInput(form.warranty_price))}
               />
             </Field>
           </div>

@@ -3,13 +3,18 @@
 import { useState, type ReactNode } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
+import { toMoneyInput } from '@/lib/money';
 import type { CatalogField, CatalogKindUi } from '@/lib/catalog';
 import type { CatalogItem } from '@/lib/types';
 
 type Values = Record<string, string>;
 
+/** How a stored value reads in its input; money always shows two decimals. */
+const toInput = (field: CatalogField, value: unknown): string =>
+  field.kind === 'money' ? toMoneyInput(value as number | string | null) : String(value ?? '');
+
 const toValues = (fields: CatalogField[], item?: CatalogItem): Values =>
-  Object.fromEntries(fields.map((f) => [f.key, item ? String(item[f.key] ?? '') : (f.options?.[0] ?? '')]));
+  Object.fromEntries(fields.map((f) => [f.key, item ? toInput(f, item[f.key]) : (f.options?.[0] ?? '')]));
 
 const isWide = (field: CatalogField) => field.kind === 'textarea';
 
@@ -57,6 +62,8 @@ function FieldInput({ field, value, onChange }: { field: CatalogField; value: st
       value={value}
       aria-label={field.label}
       onChange={(e) => onChange(e.target.value)}
+      // "12.5" becomes "12.50" once the admin leaves the field.
+      onBlur={field.kind === 'money' ? () => onChange(toMoneyInput(value)) : undefined}
     />
   );
 }
@@ -96,7 +103,7 @@ function Fields({
 function Row({ businessId, ui, item }: { businessId: string; ui: CatalogKindUi; item: CatalogItem }) {
   const queryClient = useQueryClient();
   const [values, setValues] = useState(() => toValues(ui.fields, item));
-  const dirty = ui.fields.some((f) => values[f.key] !== String(item[f.key] ?? ''));
+  const dirty = ui.fields.some((f) => values[f.key] !== toInput(f, item[f.key]));
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['business', businessId] });
 
   const save = useMutation({
