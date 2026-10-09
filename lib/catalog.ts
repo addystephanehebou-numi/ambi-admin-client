@@ -70,13 +70,14 @@ export const CATALOG_UI: CatalogKindUi[] = [
     ],
   },
   {
-    kind: 'door',
+    kind: 'ambientPackage',
     salesTypes: ['basic'],
-    title: 'Door lighting tiers',
-    description: 'Priced by number of doors.',
+    title: 'Ambient lighting packages',
+    description: 'Customers pick one package or none; shown cheapest first.',
     fields: [
-      { key: 'quantity', label: 'Doors', kind: 'int' },
+      { key: 'name', label: 'Name', kind: 'text', placeholder: 'e.g. Full Interior Kit' },
       { key: 'price', label: 'Price', kind: 'money' },
+      { key: 'description', label: 'Description', kind: 'textarea', placeholder: "What's included (optional)" },
     ],
   },
   {
