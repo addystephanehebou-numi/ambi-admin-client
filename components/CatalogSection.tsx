@@ -21,6 +21,8 @@ const toValues = (fields: CatalogField[], item?: CatalogItem): Values =>
   Object.fromEntries(fields.map((f) => [f.key, item ? toInput(f, item[f.key]) : emptyValue(f)]));
 
 const isWide = (field: CatalogField) => field.kind === 'textarea';
+/** Fields that sit in the main row and get a column header. */
+const isInline = (field: CatalogField) => !isWide(field) && !field.group;
 
 function FieldInput({ field, value, onChange }: { field: CatalogField; value: string; onChange: (v: string) => void }) {
   if (field.kind === 'select') {
@@ -101,11 +103,12 @@ function Fields({
   actions: ReactNode;
 }) {
   const wide = fields.filter(isWide);
+  const groups = [...new Set(fields.flatMap((field) => (field.group ? [field.group] : [])))];
   return (
-    <div className={wide.length ? 'space-y-2 rounded-lg border border-hairline p-3' : undefined}>
+    <div className={wide.length || groups.length ? 'space-y-2 rounded-lg border border-hairline p-3' : undefined}>
       <div className="flex items-center gap-2">
         {fields
-          .filter((field) => !isWide(field))
+          .filter(isInline)
           .map((field) => (
             <div key={field.key} className="flex-1">
               <FieldInput field={field} value={values[field.key] ?? ''} onChange={(v) => onChange({ ...values, [field.key]: v })} />
@@ -115,6 +118,21 @@ function Fields({
       </div>
       {wide.map((field) => (
         <FieldInput key={field.key} field={field} value={values[field.key] ?? ''} onChange={(v) => onChange({ ...values, [field.key]: v })} />
+      ))}
+      {groups.map((group) => (
+        <div key={group} className="space-y-1">
+          <p className="text-xs font-medium text-muted">{group}</p>
+          <div className="flex gap-2">
+            {fields
+              .filter((field) => field.group === group)
+              .map((field) => (
+                <label key={field.key} className="flex-1 space-y-1 text-xs text-secondary">
+                  <span>{field.label}</span>
+                  <FieldInput field={field} value={values[field.key] ?? ''} onChange={(v) => onChange({ ...values, [field.key]: v })} />
+                </label>
+              ))}
+          </div>
+        </div>
       ))}
     </div>
   );
@@ -179,8 +197,8 @@ export function CatalogSection({ businessId, ui, items }: { businessId: string; 
         <p className="text-sm text-secondary">{ui.description}</p>
       </div>
 
-      <div className={`flex gap-2 pr-[152px] text-xs font-medium text-muted ${ui.fields.some(isWide) ? 'px-3' : ''}`}>
-        {ui.fields.filter((field) => !isWide(field)).map((field) => (
+      <div className={`flex gap-2 pr-[152px] text-xs font-medium text-muted ${ui.fields.some((f) => !isInline(f)) ? 'px-3' : ''}`}>
+        {ui.fields.filter(isInline).map((field) => (
           <span key={field.key} className="flex-1">
             {field.label}
           </span>

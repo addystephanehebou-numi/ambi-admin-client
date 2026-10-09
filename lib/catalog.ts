@@ -14,6 +14,8 @@ export interface CatalogField {
   /** Number fields: the smallest allowed value, and the one a new row starts with. */
   min?: number;
   max?: number;
+  /** Fields sharing a group go on their own labeled line under the main row. */
+  group?: string;
 }
 
 export interface CatalogKindUi {
@@ -26,6 +28,8 @@ export interface CatalogKindUi {
   /** Shown when there are no rows. */
   emptyLabel?: string;
 }
+
+const INCLUDED_ADD_ONS = 'Included add-ons';
 
 export const CATALOG_UI: CatalogKindUi[] = [
   {
@@ -73,18 +77,25 @@ export const CATALOG_UI: CatalogKindUi[] = [
     kind: 'ambientPackage',
     salesTypes: ['basic'],
     title: 'Ambient lighting packages',
-    description: 'Customers pick one package or none; shown cheapest first.',
+    description:
+      'Customers pick one package or none; shown cheapest first. Included add-ons are free with the package and count toward each add-on\'s limit.',
     fields: [
       { key: 'name', label: 'Name', kind: 'text', placeholder: 'e.g. Full Interior Kit' },
       { key: 'price', label: 'Price', kind: 'money' },
       { key: 'description', label: 'Description', kind: 'textarea', placeholder: "What's included (optional)" },
+      { key: 'included_handles', label: 'Handles', kind: 'int', min: 0, max: 4, group: INCLUDED_ADD_ONS },
+      { key: 'included_storage', label: 'Storage', kind: 'int', min: 0, max: 4, group: INCLUDED_ADD_ONS },
+      { key: 'included_footwell', label: 'Footwell', kind: 'int', min: 0, max: 6, group: INCLUDED_ADD_ONS },
+      { key: 'included_extra_dash_strip', label: 'Dash strips', kind: 'int', min: 0, max: 20, group: INCLUDED_ADD_ONS },
+      { key: 'included_speaker_ring_lights', label: 'Speaker rings', kind: 'int', min: 0, max: 20, group: INCLUDED_ADD_ONS },
     ],
   },
   {
     kind: 'addOn',
     salesTypes: ['basic'],
     title: 'Door lighting add-ons',
-    description: 'Per-unit price. Customers pick a quantity from 0 to 8.',
+    description:
+      'Per-unit price. Customers can pick up to 4 handles, 4 storage, 6 footwells, and 20 dash strips or speaker rings.',
     fields: [
       {
         key: 'name',
