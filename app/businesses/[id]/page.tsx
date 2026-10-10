@@ -4,15 +4,17 @@ import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import { CATALOG_UI } from '@/lib/catalog';
+import { CATALOG_UI, SCHEDULE_UI } from '@/lib/catalog';
 import type { BusinessDetail, BusinessInput } from '@/lib/types';
 import { BusinessForm } from '@/components/BusinessForm';
 import { CatalogSection } from '@/components/CatalogSection';
 import { RequestsTable } from '@/components/RequestsTable';
+import { ScheduleSettingsForm } from '@/components/ScheduleSettingsForm';
 
 const TABS = [
   { id: 'details', label: 'Details' },
   { id: 'catalog', label: 'Pricing & options' },
+  { id: 'schedule', label: 'Schedule' },
   { id: 'requests', label: 'Install requests' },
 ] as const;
 
@@ -117,6 +119,29 @@ export default function BusinessPage() {
           ).map((ui) => (
             <CatalogSection key={ui.kind} businessId={id} ui={ui} items={data.catalog[ui.kind] ?? []} />
           ))}
+        </div>
+      )}
+
+      {tab === 'schedule' && (
+        <div className="space-y-5">
+          <p className="text-sm text-secondary">
+            {(data.catalog.scheduleBlock ?? []).length > 0
+              ? 'Booked times are held: a new request holds its blocks for 48 hours, and the business confirms or declines it from its email. Other customers see held times greyed out.'
+              : 'No blocks yet, so customers pick a preferred time window and nothing is held. Add blocks to turn on held times and Confirm/Decline emails.'}{' '}
+            Whether each package takes one block or full days is set on{' '}
+            <Link href={`/businesses/${id}?tab=catalog`} replace className="text-accent hover:underline">
+              Pricing &amp; options
+            </Link>
+            .
+          </p>
+          {SCHEDULE_UI.map((ui) => (
+            <CatalogSection key={ui.kind} businessId={id} ui={ui} items={data.catalog[ui.kind] ?? []} />
+          ))}
+          <ScheduleSettingsForm
+            key={JSON.stringify([data.closed_weekdays, data.full_day_drop_off_time])}
+            businessId={id}
+            initial={{ closed_weekdays: data.closed_weekdays, full_day_drop_off_time: data.full_day_drop_off_time }}
+          />
         </div>
       )}
 

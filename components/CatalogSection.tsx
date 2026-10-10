@@ -29,7 +29,9 @@ function FieldInput({ field, value, onChange }: { field: CatalogField; value: st
     return (
       <select className="input" value={value} onChange={(e) => onChange(e.target.value)} aria-label={field.label}>
         {field.options?.map((option) => (
-          <option key={option}>{option}</option>
+          <option key={option} value={option}>
+            {field.optionLabels?.[option] ?? option}
+          </option>
         ))}
       </select>
     );
@@ -56,6 +58,18 @@ function FieldInput({ field, value, onChange }: { field: CatalogField; value: st
         rows={2}
         value={value}
         placeholder={field.placeholder}
+        aria-label={field.label}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    );
+  }
+  if (field.kind === 'time' || field.kind === 'date') {
+    return (
+      <input
+        className="input"
+        type={field.kind}
+        required
+        value={value}
         aria-label={field.label}
         onChange={(e) => onChange(e.target.value)}
       />
