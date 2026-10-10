@@ -43,7 +43,15 @@ export interface BusinessInput {
 
 export type CatalogItem = { id: string } & Record<string, string | number>;
 
-export interface BusinessDetail extends BusinessInput {
+/** Weekly closed days and full-day drop-off; PUT /api/businesses/:id/schedule. */
+export interface ScheduleSettings {
+  /** 0 = Sunday … 6 = Saturday. */
+  closed_weekdays: number[];
+  /** "09:30", or '' for the first block's start. */
+  full_day_drop_off_time: string;
+}
+
+export interface BusinessDetail extends BusinessInput, ScheduleSettings {
   id: string;
   created_at: string;
   catalog: Record<string, CatalogItem[]>;

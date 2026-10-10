@@ -6,8 +6,10 @@ export interface CatalogField {
   key: string;
   label: string;
   /** 'textarea' fields go on their own full-width line under the others. */
-  kind: 'int' | 'money' | 'percent' | 'select' | 'text' | 'textarea' | 'checkbox';
+  kind: 'int' | 'money' | 'percent' | 'select' | 'text' | 'textarea' | 'checkbox' | 'time' | 'date';
   options?: readonly string[];
+  /** Select fields: what each option reads as, when not its raw value. */
+  optionLabels?: Record<string, string>;
   placeholder?: string;
   /** Money fields only: allow a negative amount (a discount). */
   allowNegative?: boolean;
@@ -31,6 +33,18 @@ export interface CatalogKindUi {
 
 const INCLUDED_ADD_ONS = 'Included add-ons';
 
+// How much of the business's day a package takes. Only used once the
+// business has schedule blocks (Schedule tab). The first option is what a
+// new row starts with.
+const DURATION_LABELS = { block: 'One block', full_day: 'Full day(s)' };
+const durationField = (first: 'block' | 'full_day'): CatalogField => ({
+  key: 'duration',
+  label: 'Takes',
+  kind: 'select',
+  options: first === 'block' ? ['block', 'full_day'] : ['full_day', 'block'],
+  optionLabels: DURATION_LABELS,
+});
+
 export const CATALOG_UI: CatalogKindUi[] = [
   {
     kind: 'customTier',
@@ -41,6 +55,7 @@ export const CATALOG_UI: CatalogKindUi[] = [
     fields: [
       { key: 'name', label: 'Name', kind: 'text', placeholder: 'e.g. Plaid Kit' },
       { key: 'price', label: 'Price', kind: 'money' },
+      durationField('block'),
       { key: 'description', label: 'Description', kind: 'textarea', placeholder: "What's included (optional)" },
     ],
   },
@@ -49,10 +64,11 @@ export const CATALOG_UI: CatalogKindUi[] = [
     salesTypes: ['basic'],
     title: 'Starlight headliner tiers',
     description:
-      'Priced by fiber (star) count. Install days is how many consecutive days the install takes; customers see e.g. "2-day install" and the dates it covers.',
+      'Priced by fiber (star) count. Install days is how many days the install takes; customers see e.g. "2-day install" and the dates it covers. With schedule blocks, a full-day tier holds every block on that many open days.',
     fields: [
       { key: 'quantity', label: 'Stars', kind: 'int' },
       { key: 'price', label: 'Price', kind: 'money' },
+      durationField('full_day'),
       { key: 'install_days', label: 'Install days', kind: 'int', min: 1, max: 14 },
     ],
   },
@@ -82,6 +98,7 @@ export const CATALOG_UI: CatalogKindUi[] = [
     fields: [
       { key: 'name', label: 'Name', kind: 'text', placeholder: 'e.g. Full Interior Kit' },
       { key: 'price', label: 'Price', kind: 'money' },
+      durationField('block'),
       { key: 'description', label: 'Description', kind: 'textarea', placeholder: "What's included (optional)" },
       { key: 'included_handles', label: 'Handles', kind: 'int', min: 0, max: 4, group: INCLUDED_ADD_ONS },
       { key: 'included_storage', label: 'Storage', kind: 'int', min: 0, max: 4, group: INCLUDED_ADD_ONS },
@@ -122,5 +139,29 @@ export const CATALOG_UI: CatalogKindUi[] = [
       { key: 'days_in_advance', label: 'Within (days)', kind: 'int' },
       { key: 'percentage', label: 'Surcharge %', kind: 'percent' },
     ],
+  },
+];
+
+// The Schedule tab's tables. See ambi-client/db/016_schedule_blocks.sql.
+export const SCHEDULE_UI: CatalogKindUi[] = [
+  {
+    kind: 'scheduleBlock',
+    title: 'Blocks',
+    description:
+      'The fixed parts of the day a customer can book, in Pacific time. A one-block package takes one; a full-day package takes all of them. The start is the drop-off time. Each block can hold one request per day.',
+    emptyLabel:
+      'None yet. Without blocks, customers pick a preferred 2-hour window, nothing is held, and requests have no Confirm/Decline links.',
+    fields: [
+      { key: 'label', label: 'Name', kind: 'text', placeholder: 'e.g. Morning' },
+      { key: 'start_time', label: 'Drop-off', kind: 'time' },
+      { key: 'end_time', label: 'Done by', kind: 'time' },
+    ],
+  },
+  {
+    kind: 'closedDate',
+    title: 'Closed dates',
+    description: 'One-off days the business is closed, like holidays. Multi-day installs skip them.',
+    emptyLabel: 'None.',
+    fields: [{ key: 'day', label: 'Date', kind: 'date' }],
   },
 ];
