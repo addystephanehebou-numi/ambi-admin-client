@@ -90,6 +90,20 @@ export const CATALOG_UI: CatalogKindUi[] = [
     ],
   },
   {
+    kind: 'customStarlightAddOn',
+    salesTypes: ['basic'],
+    title: 'Custom starlight add-ons',
+    description:
+      'Your own on/off extras, listed after the ones above once a customer picks a headliner. A negative price is a discount. Tick "From" to show the price as "From $X".',
+    emptyLabel: 'None.',
+    fields: [
+      { key: 'name', label: 'Name', kind: 'text', placeholder: 'e.g. Galaxy nebula' },
+      { key: 'price', label: 'Price', kind: 'money', allowNegative: true },
+      { key: 'is_starting_price', label: 'From', kind: 'checkbox' },
+      { key: 'description', label: 'Description', kind: 'textarea', placeholder: 'What it is (optional)' },
+    ],
+  },
+  {
     kind: 'ambientPackage',
     salesTypes: ['basic'],
     title: 'Ambient lighting packages',
@@ -137,6 +151,31 @@ export const CATALOG_UI: CatalogKindUi[] = [
     description: 'Surcharge when the requested date is within this many days.',
     fields: [
       { key: 'days_in_advance', label: 'Within (days)', kind: 'int' },
+      { key: 'percentage', label: 'Surcharge %', kind: 'percent' },
+    ],
+  },
+  {
+    kind: 'weekdaySurcharge',
+    title: 'Day-of-week surcharges',
+    description:
+      'Extra % on install work when the car is dropped off on that day (the first day of a multi-day install). Adds on top of rush pricing.',
+    emptyLabel: 'None. Every day is the same price.',
+    fields: [
+      {
+        key: 'weekday',
+        label: 'Day',
+        kind: 'select',
+        options: ['5', '6', '0', '1', '2', '3', '4'],
+        optionLabels: {
+          '0': 'Sunday',
+          '1': 'Monday',
+          '2': 'Tuesday',
+          '3': 'Wednesday',
+          '4': 'Thursday',
+          '5': 'Friday',
+          '6': 'Saturday',
+        },
+      },
       { key: 'percentage', label: 'Surcharge %', kind: 'percent' },
     ],
   },
