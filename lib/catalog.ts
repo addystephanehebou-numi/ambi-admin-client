@@ -119,20 +119,22 @@ export const CATALOG_UI: CatalogKindUi[] = [
       { key: 'included_footwell', label: 'Footwell', kind: 'int', min: 0, max: 6, group: INCLUDED_ADD_ONS },
       { key: 'included_extra_dash_strip', label: 'Dash strips', kind: 'int', min: 0, max: 20, group: INCLUDED_ADD_ONS },
       { key: 'included_speaker_ring_lights', label: 'Speaker rings', kind: 'int', min: 0, max: 20, group: INCLUDED_ADD_ONS },
+      { key: 'included_underglow', label: 'Underglow', kind: 'int', min: 0, max: 1, group: INCLUDED_ADD_ONS },
+      { key: 'included_grille', label: 'Grille', kind: 'int', min: 0, max: 1, group: INCLUDED_ADD_ONS },
     ],
   },
   {
     kind: 'addOn',
     salesTypes: ['basic'],
-    title: 'Door lighting add-ons',
+    title: 'Ambient lighting add-ons',
     description:
-      'Per-unit price. Customers can pick up to 4 handles, 4 storage, 6 footwells, and 20 dash strips or speaker rings.',
+      'Per-unit price. Customers can pick up to 4 handles, 4 storage, 6 footwells, 20 dash strips or speaker rings, and 1 underglow and 1 grille kit.',
     fields: [
       {
         key: 'name',
         label: 'Add-on',
         kind: 'select',
-        options: ['handles', 'storage', 'footwell', 'extraDashStrip', 'speakerRingLights'],
+        options: ['handles', 'storage', 'footwell', 'extraDashStrip', 'speakerRingLights', 'underglow', 'grille'],
       },
       { key: 'price', label: 'Unit price', kind: 'money' },
     ],
